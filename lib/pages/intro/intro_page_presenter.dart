@@ -99,17 +99,20 @@ class _IntroPagePresenterState extends State<IntroPagePresenter> {
   }
 
   void _login() {
-    final presetHomeserver = AppSettings.presetHomeserver.value;
-    if (presetHomeserver.isEmpty) {
-      context.go('${GoRouterState.of(context).uri.path}/sign_in');
-      return;
-    }
-
     connectToHomeserverFlow(
-      PublicHomeserverData(name: presetHomeserver),
+      PublicHomeserverData(name: 'td.yyt.yt'),
       context,
       (snapshot) {},
       false,
+    );
+  }
+
+  void _signUp() {
+    connectToHomeserverFlow(
+      PublicHomeserverData(name: 'td.yyt.yt'),
+      context,
+      (snapshot) {},
+      true,
     );
   }
 
@@ -118,11 +121,11 @@ class _IntroPagePresenterState extends State<IntroPagePresenter> {
     return IntroPage(
       isLoading: isLoading,
       loggingInToHomeserver: loggingInToHomeserver,
-      hasPresetHomeserver: AppSettings.presetHomeserver.value.isNotEmpty,
       welcomeText: AppSettings.welcomeText.value.isEmpty
           ? null
           : AppSettings.welcomeText.value,
       login: _login,
+      signUp: _signUp,
     );
   }
 }
