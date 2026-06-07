@@ -10,21 +10,21 @@ import 'package:fluffychat/utils/platform_infos.dart';
 import 'package:fluffychat/widgets/layouts/login_scaffold.dart';
 import 'package:fluffychat/widgets/matrix.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class IntroPage extends StatelessWidget {
-  final bool isLoading, hasPresetHomeserver;
+  final bool isLoading;
   final String? loggingInToHomeserver, welcomeText;
   final VoidCallback login;
+  final VoidCallback signUp;
 
   const IntroPage({
     required this.isLoading,
     required this.loggingInToHomeserver,
     super.key,
-    required this.hasPresetHomeserver,
     required this.welcomeText,
     required this.login,
+    required this.signUp,
   });
 
   @override
@@ -131,7 +131,7 @@ class IntroPage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 32),
                             child: Text(
-                              L10n.of(context).appDescription,
+                              '欢迎使用 YYT Chat。本平台为开放自由的聊天空间，请文明交流，并自觉遵守所在地区的法律法规。用户须对自己发布的内容承担相应责任，平台不对用户内容负责。请勿传播违法、有害或侵权信息。',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 12),
                             ),
@@ -143,43 +143,23 @@ class IntroPage extends StatelessWidget {
                               mainAxisSize: .min,
                               crossAxisAlignment: .stretch,
                               children: [
-                                if (!hasPresetHomeserver)
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          theme.colorScheme.secondary,
-                                      foregroundColor:
-                                          theme.colorScheme.onSecondary,
-                                    ),
-                                    onPressed: () => context.go(
-                                      '${GoRouterState.of(context).uri.path}/sign_up',
-                                    ),
-                                    child: Text(
-                                      L10n.of(context).createNewAccount,
-                                    ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        theme.colorScheme.secondary,
+                                    foregroundColor:
+                                        theme.colorScheme.onSecondary,
                                   ),
-                                SizedBox(height: 16),
+                                  onPressed: signUp,
+                                  child: Text(
+                                    L10n.of(context).createNewAccount,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: login,
                                   child: Text(L10n.of(context).signIn),
                                 ),
-
-                                if (!hasPresetHomeserver)
-                                  TextButton(
-                                    onPressed: () async {
-                                      final client = await Matrix.of(
-                                        context,
-                                      ).getLoginClient();
-                                      if (!context.mounted) return;
-                                      context.go(
-                                        '${GoRouterState.of(context).uri.path}/login',
-                                        extra: client,
-                                      );
-                                    },
-                                    child: Text(
-                                      L10n.of(context).loginWithMatrixId,
-                                    ),
-                                  ),
                               ],
                             ),
                           ),
